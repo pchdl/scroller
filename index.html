@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	html,body{
+		padding: 0;
+		margin: 0;
+		background-color: #222;
+		font-family: microsoft YaHei;
+	}
+	.title{
+		font-size: 45px;
+		text-align: center;
+		color: #999;
+		line-height: 150px;
+	}
+	.wrap{
+		width: 400px;
+		height: 350px;
+		padding: 10px;
+		margin: 0 auto;
+		background-color: #111;
+		border-radius: 15px;
+		box-shadow: 0 5px 5px #111;
+	}
+	#box{
+		position: relative;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		
+		/*border: solid 1px #ddd;*/
+		background-color: #111;
+		
+	}
+	.wrap:hover .scrollbox{opacity:1;}
+	#box .content{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: auto;
+		user-select:none;
+		-moz-user-select: none;
+	}
+	#box .content p{
+		font-size: 13px;
+		margin: 5px;
+		color: #999;
+	}
+	.scrollbox{
+		position: absolute;
+		width: 6px;
+		height: 100%;
+		top: 0;
+		right: 0;
+		background-color: #000;
+		/*display: none;*/
+		opacity:0;
+		border-radius: 5px;
+		transition: all .5s;
+	}
+	.scroller{
+		position: absolute;
+		top:0;
+		right: 0;
+		width: 100%;
+		background-color: #666;
+		border-radius: 5px;
+	}
+	.show{
+		/*display: block;*/
+		opacity:1;
+	}
+
+	</style>
+</head>
+<body>
+<div class="title">原生JS自定义滚动条</div>
+<div class="wrap">
+	<div id="box">
+	   <div id="content" class="content">
+	   		<p>===开始===</p>
+			<p>1 在水乡，每一株植物都是我的亲人  </p>
+			<p>2 那披头散发的野茅草</p>
+			<p>3 夜夜与飘飞的萤火虫相伴，星空高远</p>
+			<p>4 我的爱人选择在低矮的尘世</p>
+			<p>5 等待一场爱情的烧荒野火</p>
+			<br>
+			<p>6 风中奔跑的桃花</p>
+			<p>7 一路撕碎诀别的情书</p>
+			<p>8 身体里的香摧毁一半春天</p>
+			<p>9 我远走他乡的姐妹</p>
+			<p>10 是否遭遇到像本地一样的无情</p>
+			<br>
+			<p>11 莲蓬是堂嫂，她健硕的乳房</p>
+			<p>12 哺育一群白生生的胖小孩</p>
+			<p>13 湖水吹皱面颊</p>
+			<p>14 等待他们墩实饱满，用指甲的硬壳</p>
+			<p>15 弹出她枯萎的手掌</p>
+			<p>16 ……月亮像瓷瓦片落入水中</p>
+			<br>
+			<p>17 芦苇叶总是让我一辈子心旌摇曳</p>
+			<p>18 我愿做缠绕其间的一绺杂草</p>
+			<p>19 或水洼里一只饥渴的水蛭</p>
+			<p>20 看芦苇的关节发出声响，由青变黃</p>
+			<p>21 风吹芦花，柔软地活着</p>
+			<p>22 一场冬天雪花的粉霜</p>
+			<p>23 也无法消除上空雀斑似的鸟迹</p>
+			<br>
+			<p>24 古银杏是我逝去多年的祖父</p>
+			<p>25 每到秋天，他用满树金黄的耳朵聆听风声</p>
+			<p>26 远去的绿皮火车嘎嘎作响</p>
+			<p>27 ......他的脸贴近同样苍桑的大地</p>
+			<p>28 一群绕枝的乌鸦，仿佛飘动的黑衣衫</p>
+			<br>
+			<p>29 在水乡，每一株植物都是我的亲人</p>
+			<p>30 还有太阳花、牛筋草、蛇莓、地米菜、马齿苋</p>
+			<p>31 他们占据的每一块土地都是我的肌肤</p>
+			<p>32 每一根绿色的根茎都扯得出血来</p>
+			<p>33 月亮越来越小，掉进湖里</p>
+			<br>
+			<p>34 没有溅起一朵水花，就不见了</p>
+			<p>35 雾气升起来。这世上</p>
+			<p>36 有东西往下走，就有东西往上走</p>
+			<p>37 湖边的小房子，灯火温暖</p>
+			<p>38 仿佛不是人间。我不敢靠得太近</p>
+			<p>39 露水打湿了两双鞋</p>
+			<p>40 它们互相走路，走着走着就走失了</p>
+			<p>===结束===</p>
+	  </div>
+	</div>
+</div>
+
+<script>
+
+    var oBox = document.getElementById('box'),
+        oH = oBox.clientHeight,    //盒子高度
+        content = document.getElementById('content'),      
+        sH = content.clientHeight, //内容高度
+        
+        /*
+          计算滚动条高（长）度：
+          如果内容高度<=盒子高度，则滚动条高度为0
+          否则：滚动条高（长）度=盒子高度/内容高度*盒子高度
+        */
+        lH = oH>=sH?0:oH/sH*oH,  
+        pp = (sH-oH)/(oH-lH); //计算滚动条移动1 ，内容高度的移动量  
+
+    var scrollbox = document.createElement('div'); //创建滚动条box
+        scrollbox.className = 'scrollbox';
+    var scroller = document.createElement('div'); //创建滚动条
+        scroller.className = 'scroller';
+        scroller.style.height = lH+'px';
+    //写入滚动条
+    oBox.appendChild(scrollbox);
+    scrollbox.appendChild(scroller);
+
+    var lp0 = scroller.offsetTop;  //滚动条垂直位置最小值
+    var lp1 = scroller.offsetTop+(oH-lH);//滚动条垂直位置最大值
+
+    scroller.onmousedown = function(e){
+  	    e = e || window.event;
+  	    var  y1 = e.clientY;
+  	    var lt = this.offsetTop; //获取相对于box的顶部距离（不是document）
+  	
+	  	document.onmousemove = function(e){
+	  		e = e || window.event;
+	  		var y2 = e.clientY;
+	  		var tt = y2-y1+lt;  //滚动条垂直移动 + 上次的top值
+	  		if(tt<=lp0)tt=lp0;  //保证滚动条不移出box顶部
+	  		if(tt>=lp1)tt=lp1;  //保证滚动条不移出box底部
+	  		scroller.style.top = tt + 'px';
+	  		content.style.top = -pp*tt +'px';
+
+            //移动时如果鼠标滑出box，滚动条仍然可见
+            scrollbox.classList.add('show');
+	  	}
+	  	document.onmouseup = function(){
+	  		scrollbox.classList.remove('show');
+	  		this.onmousemove = null;
+	  		this.onmouseup = null;
+	  	}
+
+    }
+
+    //点击滚动条
+    scrollbox.onclick = function(e){
+	  	e = e || window.event;
+	  	var bt = oBox.offsetTop; 
+	  	var my = e.clientY;
+	  	var lt = scroller.offsetTop;
+	  	var cy = lt+lH/2; //当前滚动条中心点垂直方向距离box的顶部的高度
+	  	var tt = my-bt-cy+lt; //鼠标点击处y坐标 - 盒子y坐标 - 滚动条中心点y坐标 = 滚动条应该移动量
+	  	if(tt<=lp0)tt=lp0;  //保证滚动条不移出box顶部
+		if(tt>=lp1)tt=lp1;  //保证滚动条不移出box底部
+	    scroller.style.top = tt + 'px';
+		content.style.top = -pp*tt +'px';
+    }
+
+    //滚轮==
+    addWheelEvent(oBox,function(e, d){
+  	    if(oH<sH){//当有滚动条时执行
+	  	    var t0 = scroller.offsetTop;
+	  	    var gg = -d*20+t0; //滚轮放大20倍
+	  		if(gg<=lp0)gg=lp0;
+	  		if(gg>=lp1)gg=lp1;
+	  	    scroller.style.top = gg + 'px';
+	  		content.style.top = -pp*gg +'px';
+  	    }
+    });
+
+    //===兼容各浏览器的滚轮事件，统一偏移量=====
+    function addWheelEvent(obj, eFn){
+	  	if(document.addEventListener){
+	  		var oDiv = document.createElement('div');
+	  		if(oDiv.onmousewheel===null){
+	  			obj.addEventListener('mousewheel', fn, false);
+	  		}else{
+	  			obj.addEventListener('DOMMouseScroll', fn, false);
+	  		}
+	  	}else{
+	  		obj.attachEvent('onmousewheel', fn);
+	  	}
+	  	function fn(e){
+	  		e = e || window.event;
+	  		var d = e.wheelDelta/120 || -e.detail/3;
+	  		eFn.call(obj, e, d);
+	  	}
+    }
+</script>
+</body>
+</html>
